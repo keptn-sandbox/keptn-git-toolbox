@@ -127,7 +127,7 @@ jobs:
         run: |
           ls -la
           ls -la ${{ matrix.component }}
-          
+
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
