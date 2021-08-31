@@ -10,7 +10,8 @@ identityProvider:
 helmTest:
   image:
     name: changed-value
-appgateway:
+
+git-service:
   deployment:
     hostName: changed-value
   image:

@@ -1,11 +1,11 @@
-stage: teststage 
+stage: teststage
 
 image:
   repository: my-repository/changed-value
   pullPolicy: IfNotPresent
 
 identityProvider:
-  dynatraceSso:
+  sso:
     domain: sso-testdata-input
   iam:
     domain: https://iam-testdata.changed-value
@@ -15,7 +15,7 @@ helmTest:
     name: changed-value
     tag:
 
-appgateway:
+git-service:
   deployment:
     hostName: changed-value
   image:
@@ -25,15 +25,15 @@ appgateway:
   port: 8080
   loglevel: INFO
   config:
-    deus:
-      endPoint: https://demo.deus.internal.dynatracelabs.com/{deusSegment}
+    database:
+      endPoint: https://demo.database.internal.keptn.sh
     cluster:
-      endPoint: https://{tenantId}.dev.dynatracelabs.com
-    oauth2ClientId: dt0s03.dynatrace-app-gw-sandbox
+      endPoint: https://{tenantId}.dev.keptn.sh
+    oauth2ClientId: keptn-sh-dev
     oauth2ClientSecret:
-    oauth2RedirectUri: https://appgateway.sandbox.apps.dynatracelabs.com/login/oauth2/code/dynatrace-sso
+    oauth2RedirectUri: https://oauth.keptn.sh/login/oauth2/code/keptn-sso
   persistence:
-    mountPath: /var/appgateway
+    mountPath: /var/keptn
     volume:
       size: 1Gi
   replicaCount: 1
@@ -52,9 +52,9 @@ appgateway:
       name: my-repository/input-value
       tag: 3.13.0-20210122
 
-appmanager:
+keptn:
   image:
-    name: appmanager
+    name: keptn
     tag:
   service:
     port: 80
@@ -104,7 +104,7 @@ ingress:
   enabled: false
   nginx:
     enabled: true
-  class: nginx-appfw
+  class: nginx-keptn
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -124,7 +124,7 @@ ingress:
 
 
 persistence:
-  storageClass: efs
+  storageClass: gp3
 priorityClassName: medium-priority
 podDisruptionBudget:
   enabled: true
@@ -160,13 +160,9 @@ ingress-nginx:
       annotations:
         service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
         service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "180"
-    ingressClass: nginx-appfw
+    ingressClass: nginx-keptn
     config:
       use-forwarded-headers: "true"
-      main-snippet: load_module /opt/dynatrace/oneagent/agent/bin/current/linux-musl-x86-64/liboneagentnginx.so;
-    extraEnvs:
-      - name: DT_NGINX_INSTRUMENTATION_HINT_INGRESS
-        value: "1"
     affinity: {}
     image:
       repository: my-repository/input-value
@@ -181,10 +177,6 @@ ingress-nginx:
         priorityClassName: medium-priority
   imagePullSecrets: [ ]
   # - name: secretName
-
-# Enable the labels and tags to be read by dynatrace
-monitoring:
-  viewerRole: true
 
 skaffold:
   enabled: false
