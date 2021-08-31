@@ -127,7 +127,7 @@ jobs:
         with:
           version: v1.29
           working-directory: ${{ matrix.component }}
-          args: --timeout=120
+          args: --timeout 120
 
       - name: Build
         if: (github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == github.repository)
