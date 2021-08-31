@@ -139,13 +139,13 @@ jobs:
           file: ${{ matrix.component }}/docker/Dockerfile
           platforms: linux/amd64
           tags: |
-            ${{ env.DOCKER_ORGANIZATION }}/${{ env.IMAGE }}/${{ matrix.component }}:latest-dev
-            ${{ env.DOCKER_ORGANIZATION }}/${{ env.IMAGE }}"/${{ matrix.component }}:${{ env.VERSION }}
+            ${{ env.DOCKER_ORGANIZATION }}/${{ matrix.component }}:latest-dev
+            ${{ env.DOCKER_ORGANIZATION }}/${{ matrix.component }}:${{ env.VERSION }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.DOCKER_ORGANIZATION }}/${{ env.IMAGE }}"/${{ matrix.component }}:${{ env.VERSION }}'
+          image-ref: '${{ env.DOCKER_ORGANIZATION }}/${{ matrix.component }}:${{ env.VERSION }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: '${{ env.TRIVY_IGNORE_UNFIXED }}'
