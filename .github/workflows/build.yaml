@@ -123,6 +123,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
 
+      - name: List files
+        run: |
+          ls -la
+          ls -la ${{ matrix.component }}
+          
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
