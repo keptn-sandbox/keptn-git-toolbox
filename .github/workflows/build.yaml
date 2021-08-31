@@ -214,7 +214,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.BINARY_NAME }}.zip
+          name: ${{ env.BINARY_NAME }}
           path: ${{matrix.component}}/${{ env.BINARY_NAME }}
 
   test_kubectl_deployment:
