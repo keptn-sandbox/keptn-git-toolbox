@@ -103,7 +103,7 @@ jobs:
     needs: [prepare_ci_run]
     strategy:
       matrix:
-        component: [ "ci-connect-cli" ]
+        component: [ "ci-connect-cli", "promotion-service" ]
 
     runs-on: ubuntu-20.04
     env:
@@ -214,7 +214,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.BINARY_NAME }}.zip
+          name: ${{ env.BINARY_NAME }}
           path: ${{matrix.component}}/${{ env.BINARY_NAME }}
 
   test_kubectl_deployment:
