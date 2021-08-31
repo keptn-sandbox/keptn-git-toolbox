@@ -195,8 +195,8 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.component}}/${{matrix.component}}-${{ env.GOOS }}-${{ env.GOARCH }}.zip
-          path: ${{matrix.component}}/${{matrix.component}}-${{ env.GOOS }}-${{ env.GOARCH }}
+          name: ${{ env.BINARY_NAME }}.zip
+          path: ${{matrix.component}}/${{ env.BINARY_NAME }}
 
   test_kubectl_deployment:
     name: Test single kubectl deployment
