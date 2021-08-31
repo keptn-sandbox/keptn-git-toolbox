@@ -93,9 +93,12 @@ func (repositoryConfig *gitRepositoryConfig) CommitAndPushGitRepo(repository *gi
 	}
 
 	h, err := repository.Head()
+	if err != nil {
+		return fmt.Errorf("Couldn't get tag: %v", err)
+	}
 
 	if gitCommitOptions.tag != "" {
-		repository.CreateTag(gitCommitOptions.tag, h.Hash(), &git.CreateTagOptions{
+		_, err = repository.CreateTag(gitCommitOptions.tag, h.Hash(), &git.CreateTagOptions{
 			Tagger: &object.Signature{
 				Name:  "KIA CLI",
 				Email: "ci-connect@keptn.sh",

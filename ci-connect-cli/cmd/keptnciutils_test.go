@@ -168,13 +168,15 @@ func TestDeleteStages(t *testing.T) {
 	createFile(t, fs, ".keptn/stages/prod/mega-maid-as-a-service/helm/templates", "service.yaml", "My service.yaml")
 
 	deploymentConfig := createDeploymentConfig(deploymentConfig)
-	copyStages(fs, "myDirForPush", deploymentConfig.Services[0])
+	err := copyStages(fs, "myDirForPush", deploymentConfig.Services[0])
+	assert.NilError(t, err)
 
 	deploymentConfig = createDeploymentConfig(deploymentConfig2)
-	copyStages(fs, "myDirForPush", deploymentConfig.Services[0])
+	err2 := copyStages(fs, "myDirForPush", deploymentConfig.Services[0])
+	assert.NilError(t, err2)
 
-	err := deleteStages(fs, "myDirForPush", "mega-maid-as-a-service")
-	assert.NilError(t, err)
+	err3 := deleteStages(fs, "myDirForPush", "mega-maid-as-a-service")
+	assert.NilError(t, err3)
 
 	assertFileExists(t, fs, "myDirForPush/stages/dev/death-star-as-a-service/helm/templates/service.yaml")
 	assertFileExists(t, fs, "myDirForPush/stages/dev/death-star-as-a-service/locust/health.py")
@@ -190,11 +192,14 @@ func TestDeleteBase(t *testing.T) {
 	createFile(t, fs, ".keptn/base/mega-maid-as-a-service/helm/templates", "service.yaml", "My service.yaml")
 	createFile(t, fs, ".keptn/base/mega-maid-as-a-service/locust", "health.py", "My smoke test")
 
-	copyBase(fs, ".keptn/base/death-star-as-a-service", "myDirForPush/base/death-star-as-a-service")
-	copyBase(fs, ".keptn/base/mega-maid-as-a-service", "myDirForPush/base/mega-maid-as-a-service")
-
-	err := deleteBase(fs, "myDirForPush", "mega-maid-as-a-service")
+	err := copyBase(fs, ".keptn/base/death-star-as-a-service", "myDirForPush/base/death-star-as-a-service")
 	assert.NilError(t, err)
+
+	err2 := copyBase(fs, ".keptn/base/mega-maid-as-a-service", "myDirForPush/base/mega-maid-as-a-service")
+	assert.NilError(t, err2)
+
+	err3 := deleteBase(fs, "myDirForPush", "mega-maid-as-a-service")
+	assert.NilError(t, err3)
 
 	assertFileExists(t, fs, "myDirForPush/base/death-star-as-a-service/helm/templates/service.yaml")
 	assertFileExists(t, fs, "myDirForPush/base/death-star-as-a-service/locust/health.py")

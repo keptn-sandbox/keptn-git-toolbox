@@ -68,7 +68,7 @@ func (conf *DeploymentConfig) doUpdateRepository(fs afero.Fs, dir string) error 
 			return err
 		}
 
-		err = createDeploymentMetadata(fs, dir, err, service)
+		err = createDeploymentMetadata(fs, dir, service)
 		if err != nil {
 			return err
 		}
@@ -76,7 +76,7 @@ func (conf *DeploymentConfig) doUpdateRepository(fs afero.Fs, dir string) error 
 	return nil
 }
 
-func createDeploymentMetadata(fs afero.Fs, dir string, err error, service ServiceConfig) error {
+func createDeploymentMetadata(fs afero.Fs, dir string, service ServiceConfig) error {
 
 	sourceRepo, err := git.PlainOpen(*triggerDeployParams.Workspace)
 	if err != nil {
@@ -137,8 +137,15 @@ func modifyOperatorConfig(fs afero.Fs, dir string, operatorConfig KeptnConfig, s
 
 	if !foundOperatorConfig || updatedDeploymentTrigger {
 		operatorBytes, err := yaml.Marshal(operatorConfig)
+		if err != nil {
+			fmt.Println("Could not marshal operator config", err)
+		}
 		keptnDir := filepath.Join(dir, ".keptn")
-		fs.MkdirAll(keptnDir, 0775)
+		err = fs.MkdirAll(keptnDir, 0775)
+		if err != nil {
+			return fmt.Errorf("Could not create directory " + dir , err)
+		}
+
 		err = afero.WriteFile(fs, filepath.Join(keptnDir, "config.yaml"), operatorBytes, 0644)
 		if err != nil {
 			return fmt.Errorf("Could not write config file in "+dir+"/.keptn/config.yaml", err)
@@ -324,6 +331,9 @@ func deleteServiceFromOperatorConfig(fs afero.Fs, dir string, operatorConfig Kep
 		if operatorService.Name == service {
 			operatorConfig.Services = append(operatorConfig.Services[:index], operatorConfig.Services[index+1:]...)
 			operatorBytes, err := yaml.Marshal(operatorConfig)
+			if err != nil {
+				fmt.Println("Could not marshal operator config", err)
+			}
 			err = afero.WriteFile(fs, filepath.Join(dir, ".keptn", "config.yaml"), operatorBytes, 0644)
 			if err != nil {
 				return fmt.Errorf("Could not write config file in "+dir+"/.keptn/config.yaml", err)

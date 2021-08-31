@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"log"
 	"strings"
 )
 
@@ -37,10 +39,16 @@ func postInitCommands(commands []*cobra.Command) {
 }
 
 func presetRequiredFlags(cmd *cobra.Command) {
-	viper.BindPFlags(cmd.Flags())
+	err := viper.BindPFlags(cmd.Flags())
+	if err != nil {
+		log.Fatal("could not bind flags", err)
+	}
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		if viper.IsSet(f.Name) && viper.GetString(f.Name) != "" {
-			cmd.Flags().Set(f.Name, viper.GetString(f.Name))
+			err := cmd.Flags().Set(f.Name, viper.GetString(f.Name))
+			if err != nil {
+				fmt.Println("Could not set flags", err)
+			}
 		}
 	})
 }
@@ -50,7 +58,19 @@ func prepareGitRepoCmd(repository *gitRepositoryConfig, cmd *cobra.Command) {
 	repository.user = cmd.Flags().StringP("git-user", "u", "", "The git user that has access to the specified git-repo")
 	repository.token = cmd.Flags().StringP("git-token", "t", "", "The git token that will be used by the git-user to access the git-repo")
 
-	cmd.MarkFlagRequired("git-repo")
-	cmd.MarkFlagRequired("git-user")
-	cmd.MarkFlagRequired("git-token")
+	err := cmd.MarkFlagRequired("git-repo")
+	if err != nil {
+		fmt.Println("Could not mark field required", err)
+	}
+
+	err = cmd.MarkFlagRequired("git-user")
+	if err != nil {
+		fmt.Println("Could not mark field required", err)
+	}
+
+	err = cmd.MarkFlagRequired("git-token")
+	if err != nil {
+		fmt.Println("Could not mark field required", err)
+	}
+
 }

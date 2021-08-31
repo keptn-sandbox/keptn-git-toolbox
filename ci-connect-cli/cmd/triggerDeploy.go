@@ -185,8 +185,16 @@ All flags can also be set with environment variables instead e.g.
 	triggerDeployParams.Sequence = cmd.Flags().StringP("sequence", "q", "", "Which sequence should the triggerevent use, overwrites value from shipyard config")
 	triggerDeployParams.DryRun = cmd.Flags().BoolP("dry-run", "d", false, "Perform a dry-run")
 
-	cmd.MarkFlagRequired("service")
-	cmd.MarkFlagRequired("workspace")
+	err := cmd.MarkFlagRequired("service")
+	if err != nil {
+		fmt.Println("Could not mark field required", err)
+	}
+
+	err = cmd.MarkFlagRequired("workspace")
+	if err != nil {
+		fmt.Println("Could not mark field required", err)
+	}
+
 	prepareGitRepoCmd(&triggerDeployParams.Repository, cmd)
 
 	return cmd
