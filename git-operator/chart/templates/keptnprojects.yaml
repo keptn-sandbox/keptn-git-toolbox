@@ -1,0 +1,11 @@
+{{- if .Values.keptnprojects.names }}
+{{- range .Values.keptnprojects.names }}
+---
+apiVersion: keptn.operator.keptn.sh/v1
+kind: KeptnProject
+metadata:
+  name: {{ . | quote }}
+  labels:
+    {{- include "keptn-gitops-operator.labels" $ | nindent 4 }}
+{{- end }}
+{{- end }}

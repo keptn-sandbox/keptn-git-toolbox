@@ -1,0 +1,5 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- keptn_v1_keptnservice.yaml
+- keptn_v1_keptnproject.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples
