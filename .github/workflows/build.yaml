@@ -103,7 +103,7 @@ jobs:
     needs: [prepare_ci_run]
     strategy:
       matrix:
-        component: [ "ci-connect-cli", "promotion-service" ]
+        component: [ "ci-connect-cli", "promotion-service", "git-operator" ]
 
     runs-on: ubuntu-20.04
     env:
