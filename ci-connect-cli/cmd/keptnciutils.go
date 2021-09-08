@@ -30,49 +30,52 @@ func (conf *DeploymentConfig) doUpdateRepository(fs afero.Fs, dir string) error 
 	}
 
 	for _, service := range conf.Services {
-		sourceServicePath := filepath.Join(triggerDeployParams.BaseDirectory, "base", service.ServiceName)
-		sourceHelmPath := filepath.Join(sourceServicePath, "helm", service.ServiceName)
-		destinationBaseServicePath := filepath.Join(dir, "base", service.ServiceName)
+		if *triggerDeployParams.Service == service.ServiceName {
+			sourceServicePath := filepath.Join(triggerDeployParams.BaseDirectory, "base", service.ServiceName)
+			sourceHelmPath := filepath.Join(sourceServicePath, "helm", service.ServiceName)
+			destinationBaseServicePath := filepath.Join(dir, "base", service.ServiceName)
 
-		// copy helm chart from a arbitrary location in the service repository into the base folder in the keptn
-		// config repo:
-		err = copyHelmChart(fs, service, sourceHelmPath)
-		if err != nil {
-			return err
-		}
-
-		if service.UpdateHelmDependencies {
-			err = DependencyUpdate(sourceHelmPath)
+			// copy helm chart from a arbitrary location in the service repository into the base folder in the keptn
+			// config repo:
+			err = copyHelmChart(fs, service, sourceHelmPath)
 			if err != nil {
-				return fmt.Errorf("Could not update Dependencies: %s", err)
+				return err
+			}
+
+			if service.UpdateHelmDependencies {
+				err = DependencyUpdate(sourceHelmPath)
+				if err != nil {
+					return fmt.Errorf("Could not update Dependencies: %s", err)
+				}
+			}
+
+			err = copyBase(fs, sourceServicePath, destinationBaseServicePath)
+			if err != nil {
+				return err
+			}
+
+			err := copyStages(fs, dir, service)
+			if err != nil {
+				return err
+			}
+
+			err = modifyOperatorConfig(fs, dir, operatorConfig, service, stage, sequence)
+			if err != nil {
+				return err
+			}
+
+			*triggerDeployParams.Version, err = getImageVersion(service, sourceHelmPath)
+			if err != nil {
+				return err
+			}
+
+			err = createDeploymentMetadata(fs, dir, service)
+			if err != nil {
+				return err
 			}
 		}
-
-		err = copyBase(fs, sourceServicePath, destinationBaseServicePath)
-		if err != nil {
-			return err
-		}
-
-		err := copyStages(fs, dir, service)
-		if err != nil {
-			return err
-		}
-
-		err = modifyOperatorConfig(fs, dir, operatorConfig, service, stage, sequence)
-		if err != nil {
-			return err
-		}
-
-		*triggerDeployParams.Version, err = getImageVersion(service, sourceHelmPath)
-		if err != nil {
-			return err
-		}
-
-		err = createDeploymentMetadata(fs, dir, service)
-		if err != nil {
-			return err
-		}
 	}
+
 	return nil
 }
 
