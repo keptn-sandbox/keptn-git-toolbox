@@ -100,7 +100,7 @@ func (repositoryConfig *gitRepositoryConfig) CommitAndPushGitRepo(repository *gi
 	if gitCommitOptions.tag != "" {
 		_, err = repository.CreateTag(gitCommitOptions.tag, h.Hash(), &git.CreateTagOptions{
 			Tagger: &object.Signature{
-				Name:  "KIA CLI",
+				Name:  "Keptn CI-Connect CLI",
 				Email: "ci-connect@keptn.sh",
 				When:  time.Now(),
 			},
