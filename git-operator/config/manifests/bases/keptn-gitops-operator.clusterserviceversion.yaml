@@ -1,0 +1,49 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: keptn-gitops-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: KeptnProject is the Schema for the keptnprojects API
+      displayName: Keptn Project
+      kind: KeptnProject
+      name: keptnprojects.keptn.operator.keptn.sh
+      version: v1
+    - description: KeptnService is the Schema for the keptnservices API
+      displayName: Keptn Service
+      kind: KeptnService
+      name: keptnservices.keptn.operator.keptn.sh
+      version: v1
+  description: Provides GitOps Functionality for Keptn
+  displayName: Keptn GitOps Operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - keptn
+  links:
+  - name: Keptn Gitops Operator
+    url: https://keptn-gitops-operator.domain
+  maturity: alpha
+  provider:
+    name: Dynatrace
+  version: 0.0.0

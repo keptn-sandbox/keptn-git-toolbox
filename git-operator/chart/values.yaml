@@ -1,0 +1,30 @@
+apiUrl: "http://api-gateway-nginx/api"
+
+watchNamespace: ""
+
+image:
+  repository: keptn-gitops-operator       # Container Image Name
+  pullPolicy: IfNotPresent                 # Kubernetes Image Pull Policy
+  tag: ""
+
+serviceAccount:
+  create: true                               # Enables the service account creation
+  annotations: {}                            # Annotations to add to the service account
+  name: ""                                   # The name of the service account to use.
+
+podAnnotations: {}                           # Annotations to add to the created pods
+
+podSecurityContext: {}                       # Pod Security Context settings
+
+securityContext: {}                          # Security Context settings
+
+resources: {}                                 # Resource limits and requests
+
+nodeSelector: {}                                # Node selector configuration
+
+tolerations: []                                 # Tolerations for the pods
+
+affinity: {}                                    # Affinity rules
+
+keptnprojects:                                # keptn projects that the operator is working with
+  names: []
