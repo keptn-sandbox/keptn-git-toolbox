@@ -141,7 +141,7 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 				r.ReqLogger.Error(err, "Could not remove Service "+service.Spec.Service)
 				return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 			}
-			return ctrl.Result{}, nil
+			return ctrl.Result{Requeue: true}, nil
 		}
 	}
 

@@ -26,3 +26,4 @@ testbin/*
 
 kind-logs*
 kubeconfig
+git-operator
