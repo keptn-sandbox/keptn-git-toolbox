@@ -19,7 +19,6 @@ package keptnproject
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
@@ -137,14 +136,11 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			}
 		}
 		if !found {
-			fmt.Println("1")
 			err = r.removeService(ctx, project.Name, service.Spec.Service, req.Namespace)
-			fmt.Println("10")
 			if err != nil {
 				r.ReqLogger.Error(err, "Could not remove Service "+service.Spec.Service)
 				return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 			}
-			fmt.Println("11")
 			return ctrl.Result{Requeue: true}, nil
 		}
 	}
@@ -247,8 +243,6 @@ func (r *KeptnProjectReconciler) triggerDeployment(ctx context.Context, project 
 
 func (r *KeptnProjectReconciler) removeService(ctx context.Context, project string, service string, namespace string) error {
 
-	fmt.Println("5" +
-		"")
 	keptnService := keptnv1.KeptnService{}
 	err := r.Client.Get(ctx, types.NamespacedName{Name: project + "-" + service, Namespace: namespace}, &keptnService)
 	if err != nil {
