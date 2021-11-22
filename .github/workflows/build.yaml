@@ -3,16 +3,16 @@ name: builder
 on:
   push:
     paths:
-      - 'git-operator'
-      - 'promotion-service'
+      - 'git-operator/**'
+      - 'promotion-service/**'
     branches:
       - 'main'
       - 'release-*'
 
   pull_request:
     paths:
-      - 'git-operator'
-      - 'promotion-service'
+      - 'git-operator/**'
+      - 'promotion-service/**'
     branches:
       - 'main'
       - 'release-*'
