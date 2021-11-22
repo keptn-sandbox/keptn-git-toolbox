@@ -1,6 +1,6 @@
 module github.com/keptn-sandbox/keptn-git-toolbox/ci-connect-cli
 
-go 1.16
+go 1.17
 
 require (
 	github.com/go-git/go-git/v5 v5.4.2
@@ -16,3 +16,4 @@ require (
 	helm.sh/helm/v3 v3.6.3
 	rsc.io/letsencrypt v0.0.3 // indirect
 )
+
