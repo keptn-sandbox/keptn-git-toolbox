@@ -19,9 +19,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	sourcev1 "github.com/fluxcd/source-controller/api/v1beta1"
+	"github.com/keptn-sandbox/keptn-git-toolbox/git-operator/controllers/source"
+	"os"
+
+	"github.com/keptn-sandbox/keptn-git-toolbox/git-operator/controllers/keptngitconfiguration"
 	"github.com/keptn-sandbox/keptn-git-toolbox/git-operator/controllers/keptnproject"
 	"github.com/keptn-sandbox/keptn-git-toolbox/git-operator/controllers/keptnservice"
-	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -58,7 +62,7 @@ func getWatchNamespace() (string, error) {
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
+	utilruntime.Must(sourcev1.AddToScheme(scheme))
 	utilruntime.Must(keptnv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
@@ -100,6 +104,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&source.GitRepositoryWatcher{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "GitRepositoryWatcher")
+		os.Exit(1)
+	}
+
 	if err = (&keptnservice.KeptnServiceReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
@@ -112,6 +124,14 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KeptnProject")
+		os.Exit(1)
+	}
+	if err = (&keptngitconfiguration.KeptnGitConfigurationReconciler{
+		Client:   mgr.GetClient(),
+		Scheme:   mgr.GetScheme(),
+		Recorder: mgr.GetEventRecorderFor("keptngitconfiguration-controller"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "KeptnGitConfiguration")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

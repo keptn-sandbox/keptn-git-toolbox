@@ -1,0 +1,8 @@
+apiVersion: keptn.operator.keptn.sh/v1
+kind: KeptnGitConfiguration
+metadata:
+  name: platform
+spec:
+  # Add fields here
+  project: platform
+  watchedBranch: main

@@ -25,4 +25,13 @@ resources:
   kind: KeptnProject
   path: github.com/keptn-sandbox/keptn-git-toolbox/git-operator/api/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: operator.keptn.sh
+  group: keptn
+  kind: KeptnGitConfiguration
+  path: github.com/keptn-sandbox/keptn-git-toolbox/git-operator/api/v1
+  version: v1
 version: "3"

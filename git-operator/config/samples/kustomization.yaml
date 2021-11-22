@@ -2,4 +2,5 @@
 resources:
 - keptn_v1_keptnservice.yaml
 - keptn_v1_keptnproject.yaml
+- keptn_v1_keptngitconfiguration.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

@@ -1,0 +1,20 @@
+# permissions for end users to view keptngitconfigurations.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: keptngitconfiguration-viewer-role
+rules:
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations/status
+  verbs:
+  - get

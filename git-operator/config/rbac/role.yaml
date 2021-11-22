@@ -9,6 +9,32 @@ rules:
 - apiGroups:
   - keptn.operator.keptn.sh
   resources:
+  - keptngitconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
   - keptnprojects
   verbs:
   - create
@@ -58,3 +84,17 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - source.toolkit.fluxcd.io
+  resources:
+  - gitrepositories
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - source.toolkit.fluxcd.io
+  resources:
+  - gitrepositories/status
+  verbs:
+  - get

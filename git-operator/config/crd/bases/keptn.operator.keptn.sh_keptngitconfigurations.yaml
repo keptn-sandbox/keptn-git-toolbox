@@ -1,0 +1,64 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: keptngitconfigurations.keptn.operator.keptn.sh
+spec:
+  group: keptn.operator.keptn.sh
+  names:
+    kind: KeptnGitConfiguration
+    listKind: KeptnGitConfigurationList
+    plural: keptngitconfigurations
+    singular: keptngitconfiguration
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: KeptnGitConfiguration is the Schema for the keptngitconfigurations
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: KeptnGitConfigurationSpec defines the desired state of KeptnGitConfiguration
+            properties:
+              project:
+                description: Foo is an example field of KeptnGitConfiguration. Edit
+                  keptngitconfiguration_types.go to remove/update
+                type: string
+              watchedBranch:
+                type: string
+            required:
+            - project
+            - watchedBranch
+            type: object
+          status:
+            description: KeptnGitConfigurationStatus defines the observed state of
+              KeptnGitConfiguration
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

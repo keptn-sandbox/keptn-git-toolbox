@@ -1,0 +1,24 @@
+# permissions for end users to edit keptngitconfigurations.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: keptngitconfiguration-editor-role
+rules:
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - keptn.operator.keptn.sh
+  resources:
+  - keptngitconfigurations/status
+  verbs:
+  - get
