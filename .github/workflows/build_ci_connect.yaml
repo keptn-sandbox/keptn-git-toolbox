@@ -1,16 +1,14 @@
-name: builder
+name: builder_ci_connect
 
 on:
   push:
-    paths:
-      - 'ci-connect-cli'
     branches:
       - 'main'
       - 'release-*'
 
   pull_request:
     paths:
-      - 'ci-connect-cli'
+      - 'ci-connect-cli/**'
     branches:
       - 'main'
       - 'release-*'
