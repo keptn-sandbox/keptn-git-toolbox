@@ -2,9 +2,6 @@ name: builder
 
 on:
   push:
-    paths:
-      - 'git-operator/**'
-      - 'promotion-service/**'
     branches:
       - 'main'
       - 'release-*'
