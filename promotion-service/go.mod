@@ -13,11 +13,10 @@ require (
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/tools v0.0.0-20200815165600-90abf76919f3 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 	gotest.tools v2.2.0+incompatible
-	helm.sh/helm/v3 v3.5.1
-	k8s.io/apimachinery v0.20.4
+	helm.sh/helm/v3 v3.6.1
+	k8s.io/apimachinery v0.21.0
 )
 
 replace github.com/go-git/go-git/v5 => github.com/yeahservice/go-git/v5 v5.4.2-aws-patch
