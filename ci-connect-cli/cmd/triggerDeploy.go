@@ -68,7 +68,7 @@ type ServiceConfig struct {
 type GitConfig struct {
 	UserEmail        string `yaml:"user_email"`
 	UserName         string `yaml:"user_name"`
-	DeploymentBranch string `yaml:"deploymentBranch,omitempty"`
+	DeploymentBranch string `yaml:"deployment_branch,omitempty"`
 }
 
 type TriggerDeployCmdParams struct {
@@ -103,7 +103,7 @@ func (deployment *deploymentImpl) RunDeployment() error {
 	dirMain, _ := ioutil.TempDir("", "temp_dir_master")
 	dirDeploy, _ := ioutil.TempDir("", "temp_dir_deploy")
 	fmt.Println("Main Branch Directory: " + dirMain)
-	fmt.Println("Deploy Branch Directory: " + dirMain)
+	fmt.Println("Deploy Branch Directory: " + dirDeploy)
 
 	conf := DeploymentConfig{}
 	err := conf.GetCiConfig(triggerDeployParams.BaseDirectory + "/ci_config.yaml")
