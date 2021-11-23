@@ -32,6 +32,7 @@ type KeptnProjectSpec struct {
 
 	// Foo is an example field of KeptnProject. Edit KeptnProject_types.go to remove/update
 	Project string `json:"project,omitempty"`
+	DeploymentBranch string `json:"deploymentBranch, omitempty"`
 }
 
 // KeptnProjectStatus defines the observed state of KeptnProject

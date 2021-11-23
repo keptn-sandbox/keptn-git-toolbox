@@ -66,6 +66,9 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{}, nil
 	}
 
+	if project.Spec.DeploymentBranch == "" {
+		project.Spec.DeploymentBranch = "master"
+	}
 	secret := &corev1.Secret{}
 	err = r.Client.Get(ctx, types.NamespacedName{Name: "git-credentials-" + project.Name, Namespace: req.Namespace}, secret)
 	if err != nil {
@@ -79,7 +82,7 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 	}
 
-	mainHead, err := r.getCommitHash("")
+	mainHead, err := r.getCommitHash(project.Spec.DeploymentBranch)
 	if err != nil {
 		return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 	}
@@ -97,6 +100,7 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			Username: r.KeptnCredentials.User,
 			Password: r.KeptnCredentials.Token,
 		},
+		ReferenceName: plumbing.ReferenceName("refs/heads/" + project.Spec.DeploymentBranch),
 		SingleBranch: true,
 	})
 	if err != nil {
