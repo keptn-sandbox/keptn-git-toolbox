@@ -36,6 +36,8 @@ spec:
           spec:
             description: KeptnProjectSpec defines the desired state of KeptnProject
             properties:
+              deploymentBranch:
+                type: string
               project:
                 description: Foo is an example field of KeptnProject. Edit KeptnProject_types.go
                   to remove/update
