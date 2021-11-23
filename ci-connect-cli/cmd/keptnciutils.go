@@ -213,8 +213,6 @@ func readKeptnOperatorConfigFromFile(fs afero.Fs, dir string) (KeptnConfig, erro
 	return operatorConfig, nil
 }
 
-
-
 func createDeploymentManifest(gitCommit string, author string) DeploymentManifest {
 	return DeploymentManifest{
 		Metadata: DeploymentMetadata{
