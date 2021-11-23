@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/spf13/afero"
 	"io/ioutil"
 	"log"
 	"path"
@@ -65,8 +66,9 @@ type ServiceConfig struct {
 }
 
 type GitConfig struct {
-	UserEmail string `yaml:"user_email"`
-	UserName  string `yaml:"user_name"`
+	UserEmail        string `yaml:"user_email"`
+	UserName         string `yaml:"user_name"`
+	DeploymentBranch string `yaml:"deploymentBranch,omitempty"`
 }
 
 type TriggerDeployCmdParams struct {
@@ -98,8 +100,10 @@ type KeptnService struct {
 var triggerDeployParams *TriggerDeployCmdParams
 
 func (deployment *deploymentImpl) RunDeployment() error {
-	dir, _ := ioutil.TempDir("", "temp_dir_master")
-	fmt.Println("Output Directory: " + dir)
+	dirMain, _ := ioutil.TempDir("", "temp_dir_master")
+	dirDeploy, _ := ioutil.TempDir("", "temp_dir_deploy")
+	fmt.Println("Main Branch Directory: " + dirMain)
+	fmt.Println("Deploy Branch Directory: " + dirMain)
 
 	conf := DeploymentConfig{}
 	err := conf.GetCiConfig(triggerDeployParams.BaseDirectory + "/ci_config.yaml")
@@ -107,12 +111,26 @@ func (deployment *deploymentImpl) RunDeployment() error {
 		log.Fatal(err)
 	}
 
-	repo, err := triggerDeployParams.Repository.CheckOutGitRepo(dir)
+	_, err = triggerDeployParams.Repository.CheckOutGitRepo(dirMain, "")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = conf.UpdateRepository(dir)
+	repoDeploy, err := triggerDeployParams.Repository.CheckOutGitRepo(dirDeploy, conf.GitConfig.DeploymentBranch)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fsMain := afero.NewOsFs()
+	// Get Initial Stage and Sequence from Shipyard
+	stage, sequence, err := getStageAndSequence(fsMain, dirMain)
+	if err != nil {
+		return err
+	}
+
+	// Update Deployment Repository
+	fsDeploy := afero.NewOsFs()
+	err = conf.UpdateRepository(fsDeploy, dirDeploy, stage, sequence)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -134,7 +152,7 @@ func (deployment *deploymentImpl) RunDeployment() error {
 				ignoreDuplicateGitTag = service.IgnoreDuplicateGitTag
 			}
 		}
-		err = triggerDeployParams.Repository.CommitAndPushGitRepo(repo, conf, gitCommitOptions, ignoreDuplicateGitTag)
+		err = triggerDeployParams.Repository.CommitAndPushGitRepo(repoDeploy, conf, gitCommitOptions, ignoreDuplicateGitTag)
 		if err != nil {
 			return err
 		}

@@ -1,11 +1,9 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"github.com/go-git/go-git/v5/plumbing"
 	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -40,7 +38,7 @@ type gitCommitOptions struct {
 	tagMessage    string
 }
 
-func (repositoryConfig *gitRepositoryConfig) CheckOutGitRepo(dir string) (*git.Repository, error) {
+func (repositoryConfig *gitRepositoryConfig) CheckOutGitRepo(dir string, branch string) (*git.Repository, error) {
 	authentication := &http.BasicAuth{
 		Username: *repositoryConfig.user,
 		Password: *repositoryConfig.token,
@@ -52,9 +50,13 @@ func (repositoryConfig *gitRepositoryConfig) CheckOutGitRepo(dir string) (*git.R
 		SingleBranch: true,
 	}
 
+	if branch != "main" && branch != "master" && branch != "" {
+		cloneOptions.ReferenceName = plumbing.ReferenceName("refs/heads/" + branch)
+	}
+
 	repo, err := git.PlainClone(dir, false, &cloneOptions)
 	if err != nil {
-		return nil, fmt.Errorf("Could not checkout "+*repositoryConfig.remoteURI+"/master", err)
+		return nil, fmt.Errorf("Could not checkout "+*repositoryConfig.remoteURI+"/"+branch, err)
 	}
 
 	return repo, nil
@@ -138,31 +140,4 @@ func (repositoryConfig *gitRepositoryConfig) CommitAndPushGitRepo(repository *gi
 	}
 
 	return nil
-}
-
-func ConfirmChangesGitRepo(repository *git.Repository) (bool, error) {
-	w, err := repository.Worktree()
-	if err != nil {
-		return false, fmt.Errorf("Could not set worktree: %v", err)
-	}
-
-	status, _ := w.Status()
-	print(status.String())
-
-	reader := bufio.NewReader(os.Stdin)
-
-	for {
-		fmt.Print("The above changes will be made, continue (y/n): ")
-		response, err := reader.ReadString('\n')
-		if err != nil {
-			return false, err
-		}
-
-		response = strings.ToLower(strings.TrimSpace(response))
-		if response == "y" || response == "yes" {
-			return true, nil
-		} else if response == "n" || response == "no" {
-			return false, nil
-		}
-	}
 }
