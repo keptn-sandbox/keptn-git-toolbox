@@ -262,7 +262,7 @@ func TestGetStageAndSequence(t *testing.T) {
 	fs := afero.NewMemMapFs()
 	createFile(t, fs, "", "shipyard.yaml", validShipyardConfig)
 
-	stage, sequence, err := getStageAndSequence(fs, "")
+	stage, sequence, err := getStageAndSequence(fs,"")
 
 	assert.NilError(t, err)
 	assert.Equal(t, stage, "one")
@@ -270,10 +270,10 @@ func TestGetStageAndSequence(t *testing.T) {
 }
 
 func TestGetStageAndSequenceNoShipyardConfig(t *testing.T) {
-	resetTriggerDeployParams()
 	fs := afero.NewMemMapFs()
+	resetTriggerDeployParams()
 
-	_, _, err := getStageAndSequence(fs, "")
+	_, _, err := getStageAndSequence(fs,"")
 
 	assert.Error(t, err, "Could not find shipyard config")
 }

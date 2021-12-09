@@ -66,6 +66,9 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{}, nil
 	}
 
+	if project.Spec.DeploymentBranch == "" {
+		project.Spec.DeploymentBranch = "master"
+	}
 	secret := &corev1.Secret{}
 	err = r.Client.Get(ctx, types.NamespacedName{Name: "git-credentials-" + project.Name, Namespace: req.Namespace}, secret)
 	if err != nil {
@@ -79,7 +82,7 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 	}
 
-	mainHead, err := r.getCommitHash("")
+	mainHead, err := r.getCommitHash(project.Spec.DeploymentBranch)
 	if err != nil {
 		return ctrl.Result{RequeueAfter: 30 * time.Second}, err
 	}
@@ -97,7 +100,8 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			Username: r.KeptnCredentials.User,
 			Password: r.KeptnCredentials.Token,
 		},
-		SingleBranch: true,
+		ReferenceName: plumbing.ReferenceName("refs/heads/" + project.Spec.DeploymentBranch),
+		SingleBranch:  true,
 	})
 	if err != nil {
 		r.ReqLogger.Error(err, "Could not checkout "+project.Name)
@@ -147,7 +151,7 @@ func (r *KeptnProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 	if project.Status.LastMainCommit != mainHead {
 		for _, service := range config.Services {
-			err = r.triggerDeployment(ctx, project.Name, service, config.Metadata.InitBranch, req.Namespace)
+			err = r.triggerDeployment(ctx, project.Name, service, config.Metadata.InitBranch, project.Spec.DeploymentBranch, req.Namespace)
 			if err != nil {
 				r.ReqLogger.Error(err, "Could not trigger deployment "+service.Name)
 				return ctrl.Result{RequeueAfter: 30 * time.Second}, err
@@ -208,7 +212,7 @@ func (r *KeptnProjectReconciler) createKeptnService(ctx context.Context, project
 	return nil
 }
 
-func (r *KeptnProjectReconciler) triggerDeployment(ctx context.Context, project string, service model.KeptnService, initBranch string, namespace string) error {
+func (r *KeptnProjectReconciler) triggerDeployment(ctx context.Context, project string, service model.KeptnService, initBranch string, deploymentBranch string, namespace string) error {
 
 	keptnService := keptnv1.KeptnService{}
 	err := r.Client.Get(ctx, types.NamespacedName{Name: project + "-" + service.Name, Namespace: namespace}, &keptnService)
@@ -216,7 +220,7 @@ func (r *KeptnProjectReconciler) triggerDeployment(ctx context.Context, project 
 		r.ReqLogger.Info("Could not fetch KeptnService " + project + "/" + service.Name)
 	}
 
-	newVersion, author, commitHash := r.getServiceVersion(service)
+	newVersion, author, commitHash := r.getServiceVersion(service, deploymentBranch)
 	if newVersion != keptnService.Status.DesiredVersion {
 		stage := initBranch
 		if stage == "" {
@@ -305,8 +309,7 @@ func (r *KeptnProjectReconciler) getCommitHash(branch string) (string, error) {
 	return head.Hash().String(), nil
 }
 
-func (r *KeptnProjectReconciler) getServiceVersion(service model.KeptnService) (version string, author string, commitHash string) {
-
+func (r *KeptnProjectReconciler) getServiceVersion(service model.KeptnService, branch string) (version string, author string, commitHash string) {
 	config := &model.DeploymentConfig{}
 	authentication := &http.BasicAuth{
 		Username: r.KeptnCredentials.User,
@@ -317,6 +320,10 @@ func (r *KeptnProjectReconciler) getServiceVersion(service model.KeptnService) (
 		URL:          r.KeptnCredentials.RemoteURI,
 		Auth:         authentication,
 		SingleBranch: true,
+	}
+
+	if branch != "master" && branch != "main" && branch != "" {
+		cloneOptions.ReferenceName = plumbing.ReferenceName("refs/heads/" + branch)
 	}
 
 	dir, _ := ioutil.TempDir("", "temp_dir")
