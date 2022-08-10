@@ -119,9 +119,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.29
+          version: v1.38
           working-directory: ${{ matrix.component }}
           args: --timeout 120s
 
