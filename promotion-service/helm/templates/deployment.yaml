@@ -39,6 +39,10 @@ spec:
           ports:
             - containerPort: 80
           env:
+          {{- if .Values.promotionservice.pubSubUrl }}
+          - name: PUBSUB_URL
+            value: {{ .Values.promotionservice.pubSubUrl }}
+          {{- end }}
           - name: CONFIGURATION_SERVICE
             value: "http://localhost:8081/configuration-service"
           - name: env
@@ -46,6 +50,7 @@ spec:
           - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
+                apiVersion: v1
                 fieldPath: metadata.namespace
           livenessProbe:
             httpGet:
