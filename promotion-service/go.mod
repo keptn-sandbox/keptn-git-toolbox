@@ -5,18 +5,18 @@ go 1.13
 require (
 	github.com/cloudevents/sdk-go/v2 v2.3.1
 	github.com/go-git/go-git/v5 v5.4.2
+	github.com/go-openapi/spec v0.19.5 // indirect
+	github.com/go-openapi/strfmt v0.19.5 // indirect
+	github.com/go-openapi/validate v0.19.8 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/keptn/go-utils v0.8.3
 	github.com/keptn/kubernetes-utils v0.8.1
-	github.com/mitchellh/mapstructure v1.2.2 // indirect
-	github.com/onsi/ginkgo v1.12.0 // indirect
-	github.com/onsi/gomega v1.9.0 // indirect
-	github.com/spf13/afero v1.2.2
-	github.com/stretchr/testify v1.7.0
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
+	github.com/spf13/afero v1.6.0
+	github.com/stretchr/testify v1.7.2
+	gopkg.in/yaml.v3 v3.0.1
 	gotest.tools v2.2.0+incompatible
-	helm.sh/helm/v3 v3.6.1
-	k8s.io/apimachinery v0.21.0
+	helm.sh/helm/v3 v3.9.4
+	k8s.io/apimachinery v0.24.2
 )
 
 replace github.com/go-git/go-git/v5 => github.com/yeahservice/go-git/v5 v5.4.2-aws-patch
