@@ -13,7 +13,7 @@ require (
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/stretchr/testify v1.7.0
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
+	gopkg.in/yaml.v3 v3.0.0
 	gotest.tools v2.2.0+incompatible
 	helm.sh/helm/v3 v3.6.1
 	k8s.io/apimachinery v0.21.0
